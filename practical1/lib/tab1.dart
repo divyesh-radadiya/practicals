@@ -18,10 +18,9 @@ class _Tab1State extends State<Tab1> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: (Provider.of<BookmarkedData>(context).allUsers.length == 0)
-          ? Loading()
-          : DataList(),
-    );
+        child: (Provider.of<BookmarkedData>(context).allUsers.length != 0)
+            ? DataList()
+            : Loading());
   }
 }
 
@@ -33,7 +32,6 @@ class DataList extends StatelessWidget {
       builder: (context, userData, child) => ListView.builder(
         itemBuilder: (context, index) {
           return ListTile(
-            onTap: () {},
             leading: CircleAvatar(
                 child: Image(
                     image:

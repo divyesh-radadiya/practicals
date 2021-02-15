@@ -12,6 +12,7 @@ class BookmarkedData extends ChangeNotifier {
     for (var x in allData) {
       allUsers.add(User(x['login'], x['avatar_url']));
     }
+    notifyListeners();
   }
 
   void add(User user) {
