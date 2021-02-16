@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'user.dart';
 import 'package:practical1/networking.dart';
 
-class BookmarkedData extends ChangeNotifier {
+class AllUserData extends ChangeNotifier {
   List<User> allUsers = [];
   void getData() async {
     NetworkHelper networkHelper = NetworkHelper('https://api.github.com/users');

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'loading.dart';
 import 'package:provider/provider.dart';
-import 'bookmarked_data.dart';
+import 'all_user_data.dart';
 import 'package:hive/hive.dart';
 import 'models/userdata.dart';
 
@@ -14,13 +14,13 @@ class Tab1 extends StatefulWidget {
 class _Tab1State extends State<Tab1> {
   void initState() {
     super.initState();
-    Provider.of<BookmarkedData>(context, listen: false).getData();
+    Provider.of<AllUserData>(context, listen: false).getData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: (Provider.of<BookmarkedData>(context).allUsers.length != 0)
+        child: (Provider.of<AllUserData>(context).allUsers.length != 0)
             ? DataList()
             : Loading());
   }
@@ -30,30 +30,23 @@ class DataList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Consumer<BookmarkedData>(
+        child: Consumer<AllUserData>(
       builder: (context, userData, child) => ListView.builder(
         itemBuilder: (context, index) {
+          String userUrl = userData.allUsers[index].avatarUrl;
+          String userName = userData.allUsers[index].loginName;
+
           return ListTile(
-            leading: CircleAvatar(
-                child: Image(
-                    image:
-                        NetworkImage('${userData.allUsers[index].avatarUrl}'))),
-            title: Text('${userData.allUsers[index].loginName}'),
+            leading: CircleAvatar(child: Image(image: NetworkImage(userUrl))),
+            title: Text(userName),
             trailing: Checkbox(
                 value: userData.allUsers[index].isChecked,
                 onChanged: (newValue) {
                   userData.changeBookmark(newValue, index);
                   if (newValue == true) {
                     final userBox = Hive.box('users');
-                    userBox.add(UserData(userData.allUsers[index].loginName,
-                        userData.allUsers[index].avatarUrl));
+                    userBox.add(UserData(userName, userUrl));
                   }
-                  // if (newValue == false) {
-                  //   final userBox = Hive.box('users');
-                  // userBox.deleteAt(UserData(userData.allUsers[index].loginName,
-                  //     userData.allUsers[index].avatarUrl).);
-                  //
-                  // }
                 }),
           );
         },
