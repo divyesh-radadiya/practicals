@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'loading.dart';
 import 'package:provider/provider.dart';
-import 'all_user_data.dart';
+import 'models/all_user_data.dart';
 import 'package:hive/hive.dart';
 import 'models/userdata.dart';
 
