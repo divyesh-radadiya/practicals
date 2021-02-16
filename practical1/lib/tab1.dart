@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'loading.dart';
 import 'package:provider/provider.dart';
 import 'bookmarked_data.dart';
+import 'package:hive/hive.dart';
+import 'models/userdata.dart';
 
 class Tab1 extends StatefulWidget {
   @override
@@ -40,7 +42,12 @@ class DataList extends StatelessWidget {
             trailing: Checkbox(
                 value: userData.allUsers[index].isChecked,
                 onChanged: (newValue) {
+                  userData.allUsers[index].isChecked = newValue;
                   if (newValue == true) {
+                    final userBox = Hive.box('users');
+                    userBox.add(UserData(userData.allUsers[index].loginName,
+                        userData.allUsers[index].avatarUrl));
+
                     userData.add(userData.allUsers[index]);
                   }
                   if (newValue == false) {

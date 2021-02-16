@@ -3,12 +3,24 @@ import 'package:practical1/tab1.dart';
 import 'package:practical1/tab2.dart';
 import 'package:provider/provider.dart';
 import 'bookmarked_data.dart';
+import 'models/userdata.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final appDocumentDir = await path_provider.getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDir.path);
+  Hive.registerAdapter(UserDataAdapter());
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<BookmarkedData>(
@@ -16,6 +28,12 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           home: HomePage(),
         ));
+  }
+
+  @override
+  void dispose() {
+    Hive.close();
+    super.dispose();
   }
 }
 
