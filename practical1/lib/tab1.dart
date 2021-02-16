@@ -42,19 +42,18 @@ class DataList extends StatelessWidget {
             trailing: Checkbox(
                 value: userData.allUsers[index].isChecked,
                 onChanged: (newValue) {
-                  userData.allUsers[index].isChecked = newValue;
+                  userData.changeBookmark(newValue, index);
                   if (newValue == true) {
                     final userBox = Hive.box('users');
                     userBox.add(UserData(userData.allUsers[index].loginName,
                         userData.allUsers[index].avatarUrl));
-
-                    userData.add(userData.allUsers[index]);
                   }
-                  if (newValue == false) {
-                    userData.remove(userData.allUsers[index]);
-                  }
-                  // setState(() {});
-                  userData.allUsers[index].isChecked = newValue;
+                  // if (newValue == false) {
+                  //   final userBox = Hive.box('users');
+                  // userBox.deleteAt(UserData(userData.allUsers[index].loginName,
+                  //     userData.allUsers[index].avatarUrl).);
+                  //
+                  // }
                 }),
           );
         },

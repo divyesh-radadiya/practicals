@@ -40,9 +40,27 @@ class _MyAppState extends State<MyApp> {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: Hive.openBox('users'),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError)
+            return Text(snapshot.error.toString());
+          else
+            return UserPage();
+        } else
+          return Scaffold();
+      },
+    );
+  }
+}
+
+class UserPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return DefaultTabController(
         length: 2,
-        child: new Scaffold(
+        child: Scaffold(
           appBar: new AppBar(
             title: Text('Practical 1'),
             bottom: new TabBar(

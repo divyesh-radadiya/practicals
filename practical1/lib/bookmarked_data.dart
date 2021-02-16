@@ -3,7 +3,6 @@ import 'user.dart';
 import 'package:practical1/networking.dart';
 
 class BookmarkedData extends ChangeNotifier {
-  List<User> users = [];
   List<User> allUsers = [];
   void getData() async {
     NetworkHelper networkHelper = NetworkHelper('https://api.github.com/users');
@@ -15,14 +14,8 @@ class BookmarkedData extends ChangeNotifier {
     notifyListeners();
   }
 
-  void add(User user) {
-    users.add(user);
-    notifyListeners();
-  }
-
-  void remove(User user) {
-    users.remove(user);
-    allUsers[allUsers.indexOf(user)].isChecked = false;
+  void changeBookmark(bool newV, int i) {
+    allUsers[i].isChecked = newV;
     notifyListeners();
   }
 }
