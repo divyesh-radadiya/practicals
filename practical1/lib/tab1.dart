@@ -26,12 +26,30 @@ class _Tab1State extends State<Tab1> {
   }
 }
 
-class DataList extends StatelessWidget {
+class DataList extends StatefulWidget {
+  @override
+  _DataListState createState() => _DataListState();
+}
+
+class _DataListState extends State<DataList> {
+  ScrollController myScrollController = ScrollController();
+
+  void initState() {
+    super.initState();
+    myScrollController.addListener(() {
+      if (myScrollController.position.pixels ==
+          myScrollController.position.maxScrollExtent) {
+        Provider.of<AllUserData>(context, listen: false).getData();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
         child: Consumer<AllUserData>(
       builder: (context, userData, child) => ListView.builder(
+        controller: myScrollController,
         itemBuilder: (context, index) {
           String userUrl = userData.allUsers[index].avatarUrl;
           String userName = userData.allUsers[index].loginName;

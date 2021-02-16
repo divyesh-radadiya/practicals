@@ -161,7 +161,7 @@ packages:
       name: cupertino_icons
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "0.1.3"
   dart_style:
     dependency: transitive
     description:
@@ -209,6 +209,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_pagination_helper:
+    dependency: "direct main"
+    description:
+      name: flutter_pagination_helper
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1+2"
   flutter_spinkit:
     dependency: "direct main"
     description:

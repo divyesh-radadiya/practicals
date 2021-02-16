@@ -29,7 +29,8 @@ dependencies:
   hive:
   hive_flutter:
   path_provider:
-  cupertino_icons: ^1.0.0
+  flutter_pagination_helper:
+  cupertino_icons:
 
 dev_dependencies:
   flutter_test:

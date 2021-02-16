@@ -5,7 +5,8 @@ import 'package:practical1/networking.dart';
 class AllUserData extends ChangeNotifier {
   List<User> allUsers = [];
   void getData() async {
-    NetworkHelper networkHelper = NetworkHelper('https://api.github.com/users');
+    NetworkHelper networkHelper =
+        NetworkHelper('https://api.github.com/users?per_page=12');
 
     var allData = await networkHelper.getData();
     for (var x in allData) {
