@@ -19,6 +19,7 @@ dependencies:
   cupertino_icons:
   bloc:
   flutter_bloc:
+  cached_network_image: ^2.5.0
 
 dev_dependencies:
   flutter_test:

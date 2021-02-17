@@ -6,26 +6,7 @@ import 'package:hive/hive.dart';
 import 'models/userdata.dart';
 import 'models/user_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-// class Tab1 extends StatefulWidget {
-//   @override
-//   _Tab1State createState() => _Tab1State();
-// }
-//
-// class _Tab1State extends State<Tab1> {
-//   void initState() {
-//     super.initState();
-//     Provider.of<AllUserData>(context, listen: false).getData();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//         child: (Provider.of<AllUserData>(context).allUsers.length != 0)
-//             ? DataList()
-//             : Loading());
-//   }
-// }
+import 'package:cached_network_image/cached_network_image.dart';
 
 class Tab1 extends StatefulWidget {
   @override
@@ -37,11 +18,11 @@ class _Tab1State extends State<Tab1> {
 
   void initState() {
     super.initState();
-    BlocProvider.of<UserBloc>(context).add(GetData());
+    BlocProvider.of<UserBloc>(context, listen: false).add(GetData());
     myScrollController.addListener(() {
       if (myScrollController.position.pixels ==
           myScrollController.position.maxScrollExtent) {
-        BlocProvider.of<UserBloc>(context).add(GetData());
+        BlocProvider.of<UserBloc>(context, listen: false).add(GetData());
       }
     });
   }
@@ -60,12 +41,18 @@ class _Tab1State extends State<Tab1> {
             String userName = state.users[index].loginName;
 
             return ListTile(
-              leading: CircleAvatar(child: Image(image: NetworkImage(userUrl))),
+              leading: CircleAvatar(
+                child: CachedNetworkImage(
+                  imageUrl: userUrl,
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
+              ),
               title: Text(userName),
               trailing: Checkbox(
                   value: state.users[index].isChecked,
                   onChanged: (newValue) {
-                    BlocProvider.of<UserBloc>(context)
+                    BlocProvider.of<UserBloc>(context, listen: false)
                         .add(ChangeBookmark(index, newValue));
                     if (newValue == true) {
                       final userBox = Hive.box('users');

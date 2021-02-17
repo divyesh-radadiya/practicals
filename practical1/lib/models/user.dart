@@ -1,6 +1,6 @@
 class User {
-  String loginName;
-  String avatarUrl;
+  final String loginName;
+  final String avatarUrl;
   bool isChecked;
-  User(this.loginName, this.avatarUrl, {this.isChecked = false});
+  User({this.loginName, this.avatarUrl, this.isChecked = false});
 }

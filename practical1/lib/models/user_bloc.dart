@@ -22,11 +22,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       if (allUsers.length == 0) {
         yield UserLoading();
       }
-      Future allData = getData(from);
-      for (var x in await allData) {
-        allUsers.add(User(x['login'], x['avatar_url']));
+      var allData = await getData(from);
+      for (var x in allData) {
+        allUsers.add(User(loginName: x['login'], avatarUrl: x['avatar_url']));
+        from++;
       }
-      from += 12;
+
       yield UserSuccess(users: allUsers);
     }
 
@@ -39,7 +40,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
 getData(int from) async {
   NetworkHelper networkHelper =
-      NetworkHelper('https://api.github.com/users?per_page=12&since$from');
+      NetworkHelper('https://api.github.com/users?per_page=12&since=$from');
 
   var allData = await networkHelper.getData();
   return allData;
