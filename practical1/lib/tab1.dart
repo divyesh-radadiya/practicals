@@ -1,31 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:practical1/models/user_bloc.dart';
 import 'loading.dart';
 import 'package:hive/hive.dart';
 import 'models/userdata.dart';
-import 'models/user_bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'models/user_list.dart';
+import 'package:provider/provider.dart';
 
-// class Tab1 extends StatefulWidget {
-//   @override
-//   _Tab1State createState() => _Tab1State();
-// }
-//
-// class _Tab1State extends State<Tab1> {
-//   void initState() {
-//     super.initState();
-//     Provider.of<AllUserData>(context, listen: false).getData();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//         child: (Provider.of<AllUserData>(context).allUsers.length != 0)
-//             ? DataList()
-//             : Loading());
-//   }
-// }
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 class Tab1 extends StatefulWidget {
   @override
@@ -37,48 +18,48 @@ class _Tab1State extends State<Tab1> {
 
   void initState() {
     super.initState();
-    BlocProvider.of<UserBloc>(context).add(GetData());
+    Provider.of<UserList>(context, listen: false).getData();
     myScrollController.addListener(() {
       if (myScrollController.position.pixels ==
           myScrollController.position.maxScrollExtent) {
-        BlocProvider.of<UserBloc>(context).add(GetData());
+        Provider.of<UserList>(context, listen: false).getData();
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-      if (state is UserLoading) {
+    final list = Provider.of<UserList>(context);
+    return Observer(builder: (_) {
+      if (list.users.isEmpty) {
         return Loading();
-      } else if (state is UserSuccess) {
+      } else {
         return ListView.builder(
           controller: myScrollController,
           itemBuilder: (context, index) {
-            String userUrl = state.users[index].avatarUrl;
-            String userName = state.users[index].loginName;
+            String userUrl = list.users[index].avatarUrl;
+            String userName = list.users[index].loginName;
 
             return ListTile(
               leading: CircleAvatar(child: Image(image: NetworkImage(userUrl))),
               title: Text(userName),
-              trailing: Checkbox(
-                  value: state.users[index].isChecked,
-                  onChanged: (newValue) {
-                    BlocProvider.of<UserBloc>(context)
-                        .add(ChangeBookmark(index, newValue));
-                    if (newValue == true) {
-                      final userBox = Hive.box('users');
-                      userBox.add(UserData(userName, userUrl));
-                    }
-                  }),
+              trailing: Observer(
+                builder: (_) => Checkbox(
+                    value: list.users[index].isChecked,
+                    onChanged: (newValue) {
+                      Provider.of<UserList>(context, listen: false)
+                          .changeBookmark(index, newValue);
+                      if (newValue == true) {
+                        final userBox = Hive.box('users');
+                        userBox.add(UserData(userName, userUrl));
+                      }
+                    }),
+              ),
             );
           },
-          itemCount: state.users.length,
+          itemCount: list.users.length,
         );
-      } else {
-        return Container();
       }
-    }));
+    });
   }
 }

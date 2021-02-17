@@ -19,12 +19,15 @@ dependencies:
   cupertino_icons:
   bloc:
   flutter_bloc:
+  mobx:
+  flutter_mobx:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   hive_generator:
   build_runner:
+  mobx_codegen:
 
 flutter:
 
