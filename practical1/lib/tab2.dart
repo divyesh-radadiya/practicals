@@ -19,7 +19,7 @@ class Tab2 extends StatelessWidget {
               return ListTile(
                   leading: CircleAvatar(
                       child: Image(image: NetworkImage(user.avatarUrl))),
-                  title: const Text('user.loginName'),
+                  title: Text(user.loginName),
                   trailing: IconButton(
                     onPressed: () {
                       final UserData user = userBox.getAt(index) as UserData;
