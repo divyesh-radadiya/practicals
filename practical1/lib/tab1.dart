@@ -31,7 +31,7 @@ class _Tab1State extends State<Tab1> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: BlocBuilder<UserBloc, UserState>(
+    return BlocBuilder<UserBloc, UserState>(
         builder: (BuildContext context, UserState state) {
       if (state is UserLoading) {
         return Loading();
@@ -58,7 +58,7 @@ class _Tab1State extends State<Tab1> {
                   value: state.users[index].isChecked,
                   onChanged: (bool newValue) {
                     BlocProvider.of<UserBloc>(context, listen: false)
-                        .add(ChangeBookmark(index, newValue));
+                        .add(ChangeBookmark(index: index, newValue: newValue));
                     final Box<dynamic> userBox = Hive.box('users');
                     if (newValue == true) {
                       userBox.add(
@@ -79,14 +79,10 @@ class _Tab1State extends State<Tab1> {
           itemCount: state.users.length,
         );
       } else if (state is UserFail) {
-        return Container(
-          child: const Center(child: Text('Fail to load!!!')),
-        );
+        return const Center(child: Text('Fail to load!!!'));
       } else {
-        return Container(
-          child: const Center(child: Text('Some error!!!')),
-        );
+        return const Center(child: Text('Some error!!!'));
       }
-    }));
+    });
   }
 }

@@ -15,7 +15,7 @@ part 'user_state.dart';
 class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc() : super(UserInitial());
 
-  List<User> allUsers = [];
+  List<User> allUsers = <User>[];
   int from = 0;
 
   @override

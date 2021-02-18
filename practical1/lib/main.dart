@@ -11,7 +11,7 @@ import 'package:practical1/tab2.dart';
 import 'models/user_bloc.dart';
 import 'models/userdata.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final Directory appDocumentDir =
       await path_provider.getApplicationDocumentsDirectory();
@@ -28,7 +28,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
+    return BlocProvider<UserBloc>(
         create: (BuildContext context) => UserBloc(),
         child: MaterialApp(
           home: HomePage(),
@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return FutureBuilder<Box<dynamic>>(
       future: Hive.openBox('users'),
       builder: (BuildContext context, AsyncSnapshot<Box<dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
@@ -71,7 +71,7 @@ class UserPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Practical 1'),
             bottom: const TabBar(
-              tabs: [
+              tabs: <Widget>[
                 Tab(
                   child: Text('Users'),
                 ),
@@ -83,7 +83,7 @@ class UserPage extends StatelessWidget {
             ),
           ),
           body: TabBarView(
-            children: [Tab1(), Tab2()],
+            children: <Widget>[Tab1(), Tab2()],
           ),
         ));
   }

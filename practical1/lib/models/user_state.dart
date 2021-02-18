@@ -1,9 +1,7 @@
 part of 'user_bloc.dart';
 
 @immutable
-abstract class UserState {
-  final List<User> users = [];
-}
+abstract class UserState {}
 
 class UserInitial extends UserState {}
 
@@ -13,6 +11,6 @@ class UserFail extends UserState {}
 
 class UserSuccess extends UserState {
   UserSuccess({this.users});
-  @override
+
   final List<User> users;
 }

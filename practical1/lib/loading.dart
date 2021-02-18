@@ -4,12 +4,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 class Loading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: SpinKitDoubleBounce(
-          color: Colors.lightBlueAccent,
-          size: 100.0,
-        ),
+    return const Center(
+      child: SpinKitDoubleBounce(
+        color: Colors.lightBlueAccent,
+        size: 100.0,
       ),
     );
   }

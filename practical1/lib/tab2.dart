@@ -10,7 +10,7 @@ import 'models/user_bloc.dart';
 class Tab2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
+    return ValueListenableBuilder<Box<dynamic>>(
         valueListenable: Hive.box('users').listenable(),
         builder: (BuildContext context, Box<dynamic> userBox, Widget widget) {
           return ListView.builder(
@@ -28,7 +28,7 @@ class Tab2 extends StatelessWidget {
                       for (int i = 0; i < allUser.length; i++) {
                         if (user.loginName == allUser[i].loginName) {
                           BlocProvider.of<UserBloc>(context, listen: false)
-                              .add(ChangeBookmark(i, false));
+                              .add(ChangeBookmark(index: i, newValue: false));
                         }
                       }
                       userBox.deleteAt(index);
