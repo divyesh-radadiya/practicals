@@ -73,8 +73,14 @@ class _Tab1State extends State<Tab1> {
           },
           itemCount: state.users.length,
         );
+      } else if (state is UserFail) {
+        return Container(
+          child: Center(child: Text('Fail to load!!!')),
+        );
       } else {
-        return Container();
+        return Container(
+          child: Center(child: Text('Some error!!!')),
+        );
       }
     }));
   }

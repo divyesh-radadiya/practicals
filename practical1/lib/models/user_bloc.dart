@@ -25,29 +25,32 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         yield UserLoading();
       }
       final allData = await getData(from);
-      for_all:
-      for (var x in allData) {
-        var userBox = Hive.box('users');
-        bool isChecked = false;
-        for (var i in allUsers) {
-          if (i.loginName == x['login']) continue for_all;
-        }
-
-        for (var i = 0; i < userBox.length; i++) {
-          final user = userBox.getAt(i) as UserData;
-          if (user.loginName == x['login']) {
-            isChecked = true;
-            break;
+      if (allData == null) {
+        yield UserFail();
+      } else {
+        for_all:
+        for (var x in allData) {
+          var userBox = Hive.box('users');
+          bool isChecked = false;
+          from++;
+          for (var i in allUsers) {
+            if (i.loginName == x['login']) continue for_all;
           }
-        }
-        allUsers.add(User(
-            loginName: x['login'],
-            avatarUrl: x['avatar_url'],
-            isChecked: isChecked));
-        from++;
-      }
 
-      yield UserSuccess(users: allUsers);
+          for (var i = 0; i < userBox.length; i++) {
+            final user = userBox.getAt(i) as UserData;
+            if (user.loginName == x['login']) {
+              isChecked = true;
+              break;
+            }
+          }
+          allUsers.add(User(
+              loginName: x['login'],
+              avatarUrl: x['avatar_url'],
+              isChecked: isChecked));
+        }
+        yield UserSuccess(users: allUsers);
+      }
     }
 
     if (event is ChangeBookmark) {
@@ -62,5 +65,6 @@ getData(int from) async {
       NetworkHelper('https://api.github.com/users?per_page=12&since=$from');
 
   var allData = await networkHelper.getData();
+
   return allData;
 }
