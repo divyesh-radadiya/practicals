@@ -25,9 +25,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         yield UserLoading();
       }
       final allData = await getData(from);
+      for_all:
       for (var x in allData) {
         var userBox = Hive.box('users');
         bool isChecked = false;
+        for (var i in allUsers) {
+          if (i.loginName == x['login']) continue for_all;
+        }
+
         for (var i = 0; i < userBox.length; i++) {
           final user = userBox.getAt(i) as UserData;
           if (user.loginName == x['login']) {
