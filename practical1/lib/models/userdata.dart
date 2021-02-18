@@ -4,6 +4,8 @@ part 'userdata.g.dart';
 
 @HiveType(typeId: 0)
 class UserData {
+  UserData({this.loginName, this.avatarUrl, this.isChecked = false});
+
   @HiveField(0)
   final String loginName;
 
@@ -12,6 +14,4 @@ class UserData {
 
   @HiveField(2)
   final bool isChecked;
-
-  UserData({this.loginName, this.avatarUrl, this.isChecked = false});
 }

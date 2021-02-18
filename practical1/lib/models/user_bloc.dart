@@ -1,11 +1,13 @@
 import 'dart:async';
-import 'user.dart';
-import 'package:practical1/networking.dart';
+
 import 'package:bloc/bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:meta/meta.dart';
 import 'package:practical1/models/user.dart';
-import 'package:hive/hive.dart';
 import 'package:practical1/models/userdata.dart';
+import 'package:practical1/networking.dart';
+
+import 'user.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';
@@ -21,32 +23,32 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     UserEvent event,
   ) async* {
     if (event is GetData) {
-      if (allUsers.length == 0) {
+      if (allUsers.isEmpty) {
         yield UserLoading();
       }
-      final allData = await getData(from);
+      final dynamic allData = await getData(from);
       if (allData == null) {
         yield UserFail();
       } else {
         for_all:
-        for (var x in allData) {
-          var userBox = Hive.box('users');
+        for (final dynamic x in allData) {
+          final Box<dynamic> userBox = Hive.box('users');
           bool isChecked = false;
           from++;
-          for (var i in allUsers) {
+          for (final User i in allUsers) {
             if (i.loginName == x['login']) continue for_all;
           }
 
-          for (var i = 0; i < userBox.length; i++) {
-            final user = userBox.getAt(i) as UserData;
+          for (int i = 0; i < userBox.length; i++) {
+            final UserData user = userBox.getAt(i) as UserData;
             if (user.loginName == x['login']) {
               isChecked = true;
               break;
             }
           }
           allUsers.add(User(
-              loginName: x['login'],
-              avatarUrl: x['avatar_url'],
+              loginName: x['login'].toString(),
+              avatarUrl: x['avatar_url'].toString(),
               isChecked: isChecked));
         }
         yield UserSuccess(users: allUsers);
@@ -60,11 +62,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 }
 
-getData(int from) async {
-  NetworkHelper networkHelper =
+dynamic getData(int from) async {
+  final NetworkHelper networkHelper =
       NetworkHelper('https://api.github.com/users?per_page=12&since=$from');
 
-  var allData = await networkHelper.getData();
+  final dynamic allData = await networkHelper.getData();
 
   return allData;
 }

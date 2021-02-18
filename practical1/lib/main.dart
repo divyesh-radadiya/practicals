@@ -1,16 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:practical1/models/user_bloc.dart';
 import 'package:practical1/tab1.dart';
 import 'package:practical1/tab2.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'models/userdata.dart';
-import 'package:hive/hive.dart';
+
 import 'models/user_bloc.dart';
-import 'package:path_provider/path_provider.dart' as path_provider;
+import 'models/userdata.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final appDocumentDir = await path_provider.getApplicationDocumentsDirectory();
+  final Directory appDocumentDir =
+      await path_provider.getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
   Hive.registerAdapter(UserDataAdapter());
   runApp(MyApp());
@@ -43,14 +47,16 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: Hive.openBox('users'),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<Box<dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError)
+          if (snapshot.hasError) {
             return Text(snapshot.error.toString());
-          else
+          } else {
             return UserPage();
-        } else
-          return Scaffold();
+          }
+        } else {
+          return const Scaffold();
+        }
       },
     );
   }
@@ -62,21 +68,21 @@ class UserPage extends StatelessWidget {
     return DefaultTabController(
         length: 2,
         child: Scaffold(
-          appBar: new AppBar(
-            title: Text('Practical 1'),
-            bottom: new TabBar(
+          appBar: AppBar(
+            title: const Text('Practical 1'),
+            bottom: const TabBar(
               tabs: [
-                new Tab(
+                Tab(
                   child: Text('Users'),
                 ),
-                new Tab(
+                Tab(
                   child: Text('Bookmarked Users'),
                 )
               ],
               indicatorColor: Colors.white,
             ),
           ),
-          body: new TabBarView(
+          body: TabBarView(
             children: [Tab1(), Tab2()],
           ),
         ));

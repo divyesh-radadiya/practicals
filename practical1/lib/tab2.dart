@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:practical1/models/userdata.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:practical1/models/userdata.dart';
+
+import 'models/user.dart';
 import 'models/user_bloc.dart';
 
 class Tab2 extends StatelessWidget {
@@ -10,20 +12,20 @@ class Tab2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
         valueListenable: Hive.box('users').listenable(),
-        builder: (context, userBox, widget) {
+        builder: (BuildContext context, Box<dynamic> userBox, Widget widget) {
           return ListView.builder(
-            itemBuilder: (context, index) {
-              final user = userBox.getAt(index) as UserData;
+            itemBuilder: (BuildContext context, int index) {
+              final UserData user = userBox.getAt(index) as UserData;
               return ListTile(
                   leading: CircleAvatar(
-                      child: Image(image: NetworkImage('${user.avatarUrl}'))),
-                  title: Text('${user.loginName}'),
+                      child: Image(image: NetworkImage(user.avatarUrl))),
+                  title: const Text('user.loginName'),
                   trailing: IconButton(
                     onPressed: () {
-                      final user = userBox.getAt(index) as UserData;
-                      final allUser =
+                      final UserData user = userBox.getAt(index) as UserData;
+                      final List<User> allUser =
                           BlocProvider.of<UserBloc>(context).allUsers;
-                      for (var i = 0; i < allUser.length; i++) {
+                      for (int i = 0; i < allUser.length; i++) {
                         if (user.loginName == allUser[i].loginName) {
                           BlocProvider.of<UserBloc>(context, listen: false)
                               .add(ChangeBookmark(i, false));
@@ -31,7 +33,7 @@ class Tab2 extends StatelessWidget {
                       }
                       userBox.deleteAt(index);
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.clear,
                     ),
                   ));

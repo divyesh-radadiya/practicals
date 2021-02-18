@@ -1,12 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:practical1/models/user_bloc.dart';
-import 'loading.dart';
-import 'package:hive/hive.dart';
-import 'models/userdata.dart';
-import 'models/user_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:hive/hive.dart';
+import 'package:practical1/models/user_bloc.dart';
+
+import 'loading.dart';
+import 'models/user_bloc.dart';
+import 'models/userdata.dart';
 
 class Tab1 extends StatefulWidget {
   @override
@@ -16,6 +17,7 @@ class Tab1 extends StatefulWidget {
 class _Tab1State extends State<Tab1> {
   ScrollController myScrollController = ScrollController();
 
+  @override
   void initState() {
     super.initState();
     BlocProvider.of<UserBloc>(context, listen: false).add(GetData());
@@ -29,39 +31,42 @@ class _Tab1State extends State<Tab1> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+    return Container(child: BlocBuilder<UserBloc, UserState>(
+        builder: (BuildContext context, UserState state) {
       if (state is UserLoading) {
         return Loading();
       } else if (state is UserSuccess) {
         return ListView.builder(
           controller: myScrollController,
-          itemBuilder: (context, index) {
-            String userUrl = state.users[index].avatarUrl;
-            String userName = state.users[index].loginName;
+          itemBuilder: (BuildContext context, int index) {
+            final String userUrl = state.users[index].avatarUrl;
+            final String userName = state.users[index].loginName;
 
             return ListTile(
               leading: CircleAvatar(
                 child: CachedNetworkImage(
                   imageUrl: userUrl,
-                  placeholder: (context, url) => CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  placeholder: (BuildContext context, String url) =>
+                      const CircularProgressIndicator(),
+                  errorWidget:
+                      (BuildContext context, String url, dynamic error) =>
+                          const Icon(Icons.error),
                 ),
               ),
               title: Text(userName),
               trailing: Checkbox(
                   value: state.users[index].isChecked,
-                  onChanged: (newValue) {
+                  onChanged: (bool newValue) {
                     BlocProvider.of<UserBloc>(context, listen: false)
                         .add(ChangeBookmark(index, newValue));
-                    var userBox = Hive.box('users');
+                    final Box<dynamic> userBox = Hive.box('users');
                     if (newValue == true) {
                       userBox.add(
                           UserData(loginName: userName, avatarUrl: userUrl));
                     }
                     if (newValue == false) {
-                      for (var i = 0; i < userBox.length; i++) {
-                        var user = userBox.getAt(i) as UserData;
+                      for (int i = 0; i < userBox.length; i++) {
+                        final UserData user = userBox.getAt(i) as UserData;
                         if (user.loginName == userName) {
                           userBox.deleteAt(i);
                           break;
@@ -75,11 +80,11 @@ class _Tab1State extends State<Tab1> {
         );
       } else if (state is UserFail) {
         return Container(
-          child: Center(child: Text('Fail to load!!!')),
+          child: const Center(child: Text('Fail to load!!!')),
         );
       } else {
         return Container(
-          child: Center(child: Text('Some error!!!')),
+          child: const Center(child: Text('Some error!!!')),
         );
       }
     }));
