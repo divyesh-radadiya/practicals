@@ -17,8 +17,8 @@ class UserDataAdapter extends TypeAdapter<UserData> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return UserData(
-      fields[0] as String,
-      fields[1] as String,
+      loginName: fields[0] as String,
+      avatarUrl: fields[1] as String,
     );
   }
 

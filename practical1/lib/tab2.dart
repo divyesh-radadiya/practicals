@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:practical1/models/userdata.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'models/user_bloc.dart';
 
 class Tab2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return WatchBoxBuilder(
-        box: Hive.box('users'),
-        builder: (context, userBox) {
+    return ValueListenableBuilder(
+        valueListenable: Hive.box('users').listenable(),
+        builder: (context, userBox, widget) {
           return ListView.builder(
             itemBuilder: (context, index) {
               final user = userBox.getAt(index) as UserData;
@@ -18,6 +20,15 @@ class Tab2 extends StatelessWidget {
                   title: Text('${user.loginName}'),
                   trailing: IconButton(
                     onPressed: () {
+                      final user = userBox.getAt(index) as UserData;
+                      final allUser =
+                          BlocProvider.of<UserBloc>(context).allUsers;
+                      for (var i = 0; i < allUser.length; i++) {
+                        if (user.loginName == allUser[i].loginName) {
+                          BlocProvider.of<UserBloc>(context, listen: false)
+                              .add(ChangeBookmark(i, false));
+                        }
+                      }
                       userBox.deleteAt(index);
                     },
                     icon: Icon(

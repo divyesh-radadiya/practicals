@@ -54,9 +54,19 @@ class _Tab1State extends State<Tab1> {
                   onChanged: (newValue) {
                     BlocProvider.of<UserBloc>(context, listen: false)
                         .add(ChangeBookmark(index, newValue));
+                    var userBox = Hive.box('users');
                     if (newValue == true) {
-                      final userBox = Hive.box('users');
-                      userBox.add(UserData(userName, userUrl));
+                      userBox.add(
+                          UserData(loginName: userName, avatarUrl: userUrl));
+                    }
+                    if (newValue == false) {
+                      for (var i = 0; i < userBox.length; i++) {
+                        var user = userBox.getAt(i) as UserData;
+                        if (user.loginName == userName) {
+                          userBox.deleteAt(i);
+                          break;
+                        }
+                      }
                     }
                   }),
             );

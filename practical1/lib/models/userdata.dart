@@ -10,5 +10,8 @@ class UserData {
   @HiveField(1)
   final String avatarUrl;
 
-  UserData(this.loginName, this.avatarUrl);
+  @HiveField(2)
+  final bool isChecked;
+
+  UserData({this.loginName, this.avatarUrl, this.isChecked = false});
 }

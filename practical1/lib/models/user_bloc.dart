@@ -4,6 +4,8 @@ import 'package:practical1/networking.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:practical1/models/user.dart';
+import 'package:hive/hive.dart';
+import 'package:practical1/models/userdata.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';
@@ -22,9 +24,21 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       if (allUsers.length == 0) {
         yield UserLoading();
       }
-      var allData = await getData(from);
+      final allData = await getData(from);
       for (var x in allData) {
-        allUsers.add(User(loginName: x['login'], avatarUrl: x['avatar_url']));
+        var userBox = Hive.box('users');
+        bool isChecked = false;
+        for (var i = 0; i < userBox.length; i++) {
+          final user = userBox.getAt(i) as UserData;
+          if (user.loginName == x['login']) {
+            isChecked = true;
+            break;
+          }
+        }
+        allUsers.add(User(
+            loginName: x['login'],
+            avatarUrl: x['avatar_url'],
+            isChecked: isChecked));
         from++;
       }
 
